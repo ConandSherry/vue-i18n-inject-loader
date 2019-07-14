@@ -1,0 +1,26 @@
+{
+  "name": "vue-i18n-generator",
+  "version": "1.0.0",
+  "description": "auto insert $t function in vue file which vue-i18n needed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConandSherry/vue-i18n-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ConandSherry/vue-i18n-generator/issues"
+  },
+  "homepage": "https://github.com/ConandSherry/vue-i18n-generator#readme",
+  "dependencies": {
+    "@babel/parser": "^7.5.0",
+    "@babel/traverse": "^7.5.0",
+    "glob": "^7.1.4",
+    "parse5": "^5.1.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
