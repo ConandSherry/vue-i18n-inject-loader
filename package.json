@@ -1,26 +1,30 @@
 {
   "name": "vue-i18n-generator",
   "version": "1.0.0",
-  "description": "auto insert $t function in vue file which vue-i18n needed",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ConandSherry/vue-i18n-generator.git"
+    "url": "git+https://github.com/ConandSherry/vue-i18n-inject-loader.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ConandSherry/vue-i18n-generator/issues"
+    "url": "https://github.com/ConandSherry/vue-i18n-inject-loader/issues"
   },
-  "homepage": "https://github.com/ConandSherry/vue-i18n-generator#readme",
+  "homepage": "https://github.com/ConandSherry/vue-i18n-inject-loader#readme",
   "dependencies": {
-    "@babel/parser": "^7.5.0",
-    "@babel/traverse": "^7.5.0",
-    "glob": "^7.1.4",
-    "parse5": "^5.1.0",
-    "vue-template-compiler": "^2.6.10"
+    "@babel/generator": "^7.12.10",
+    "@babel/template": "^7.12.7",
+    "@babel/traverse": "^7.12.5",
+    "@babel/types": "^7.12.10",
+    "prettier": "^2.1.2",
+    "vue-template-compiler": "^2.6.12"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
