@@ -8,7 +8,6 @@ module.exports = function (htmlStr) {
    * otherwise may error in some case
    * <div><div></div></div>
    */
-  //todo 需要处理functional 组件
   htmlStr = `<template>${htmlStr}</template>`;
   let { firstChild: astNode } = prettierHtml.parsers.vue.parse(htmlStr, null, {
     filepath: "htmlStr.html",

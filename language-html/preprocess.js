@@ -4,6 +4,7 @@ const { wrapWithTemplateLiteral } = require("./utils");
 const PREPROCESS_PIPELINE = [
   isSelfClosing,
   isDirective,
+  isFunctional,
   dealAttrNamespace,
   injectAttrSpace,
   extractInterpolation,
@@ -89,6 +90,18 @@ function isDirective(ast) {
     }
     return node;
   });
+}
+function isFunctional(ast) {
+  const rootNode = ast.children[0];
+  if (
+    rootNode.attrs &&
+    rootNode.attrs.some(({ name }) => name === "functional")
+  ) {
+    Object.assign(ast, {
+      isFunctional: true,
+    });
+  }
+  return ast;
 }
 function injectAttrSpace(ast) {
   return ast.map((node) => {

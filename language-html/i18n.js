@@ -41,7 +41,8 @@ function dirI18n(node) {
     node.value = languageJs(convertFilter(value)).slice(0, -1);
   }
 }
-module.exports = function travserNode(node) {
+
+function travserNode(node) {
   const handler = {
     text: textI18n,
     element: (node) => {
@@ -57,4 +58,33 @@ module.exports = function travserNode(node) {
     comment: (node) => node,
   };
   handler[node.type](node);
+}
+function travserFunctionalNode(node) {
+  const handler = {
+    element: (node) => {
+      node.attrs.forEach((attr) => {
+        travserFunctionalNode(attr);
+      });
+      node.children.forEach((node) => {
+        travserFunctionalNode(node);
+      });
+    },
+    text: (node) => {
+      if (!hasChinese.test(node.value)) {
+        return;
+      }
+      // TODO using languageJs() instead of regular expression
+      if (/parent\.\$t/.test(node.value)) {
+        return;
+      }
+      node.value = node.value.replace(/\$t/, "parent.$t");
+    },
+  };
+  const noop = () => {};
+  (handler[node.type] || noop)(node);
+}
+
+module.exports = function init(node) {
+  travserNode(node);
+  node.isFunctional && travserFunctionalNode(node);
 };

@@ -78,3 +78,9 @@ test("don't translate interpolation with recursive $t", () => {
     `<div>{{$t(\`中文\`)}}</div>`
   );
 });
+
+test("translate interpolation with functional component", () => {
+  expect(htmli18n(`<template functional>中文</template>`)).toBe(
+    `<template functional>{{parent.$t(\`中文\`)}}</template>`
+  );
+});
