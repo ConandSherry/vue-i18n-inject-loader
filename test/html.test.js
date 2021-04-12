@@ -79,8 +79,22 @@ test("don't translate interpolation with recursive $t", () => {
   );
 });
 
-test("translate interpolation with functional component", () => {
+test("translate interpolation inside functional component", () => {
   expect(htmli18n(`<template functional>中文</template>`)).toBe(
     `<template functional>{{parent.$t(\`中文\`)}}</template>`
+  );
+});
+test("translate interpolation inside child components of functional component", () => {
+  expect(
+    htmli18n(`<template functional><button>中文</button></template>`)
+  ).toBe(
+    `<template functional><button>{{parent.$t(\`中文\`)}}</button></template>`
+  );
+});
+test("translate static attr inside child components of functional component", () => {
+  expect(
+    htmli18n(`<template functional><button text="中文"></button></template>`)
+  ).toBe(
+    `<template functional><button :text="parent.$t(\`中文\`)"></button></template>`
   );
 });

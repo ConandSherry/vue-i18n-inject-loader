@@ -59,32 +59,26 @@ function travserNode(node) {
   };
   handler[node.type](node);
 }
-function travserFunctionalNode(node) {
-  const handler = {
-    element: (node) => {
-      node.attrs.forEach((attr) => {
-        travserFunctionalNode(attr);
-      });
-      node.children.forEach((node) => {
-        travserFunctionalNode(node);
-      });
-    },
-    text: (node) => {
-      if (!hasChinese.test(node.value)) {
-        return;
-      }
-      // TODO using languageJs() instead of regular expression
-      if (/parent\.\$t/.test(node.value)) {
-        return;
-      }
-      node.value = node.value.replace(/\$t/, "parent.$t");
-    },
-  };
-  const noop = () => {};
-  (handler[node.type] || noop)(node);
+function travserFunctionalNode(functionalNode) {
+  if (!functionalNode.isFunctional) {
+    return;
+  }
+
+  // use `map()` like `forEach()`
+  functionalNode.map((node) => {
+    const { value: nodeValue } = node;
+    // TODO using languageJs() instead of regular expression
+    if (
+      hasChinese.test(nodeValue) &&
+      /\$t/.test(nodeValue) &&
+      !/parent\.\$t/.test(nodeValue)
+    ) {
+      node.value = nodeValue.replace(/\$t/, "parent.$t");
+    }
+  });
 }
 
 module.exports = function init(node) {
   travserNode(node);
-  node.isFunctional && travserFunctionalNode(node);
+  travserFunctionalNode(node);
 };
