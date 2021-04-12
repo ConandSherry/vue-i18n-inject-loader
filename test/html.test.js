@@ -1,4 +1,5 @@
 const htmli18n = require("../language-html");
+
 test("parse simple html", () => {
   expect(htmli18n(`<div><div></div></div>`)).toBe(`<div><div></div></div>`);
 });
@@ -79,6 +80,7 @@ test("don't translate interpolation with recursive $t", () => {
   );
 });
 
+// 函数式组件相关
 test("translate interpolation inside functional component", () => {
   expect(htmli18n(`<template functional>中文</template>`)).toBe(
     `<template functional>{{parent.$t(\`中文\`)}}</template>`
