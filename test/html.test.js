@@ -100,3 +100,43 @@ test("translate static attr inside child components of functional component", ()
     `<template functional><button :text="parent.$t(\`中文\`)"></button></template>`
   );
 });
+
+// v-for-in && v-for-of
+test("translate interpolation inside a v-for-in loop", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) in ['中文1', '中文2']"></div>`)
+  ).toBe(`<div v-for="(item, index) in [$t('中文1'), $t('中文2')]"></div>`);
+});
+test("translate interpolation inside a v-for-in loop, including ` in `", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) in ['中文1 in 中文3', '中文2']"></div>`)
+  ).toBe(
+    `<div v-for="(item, index) in [$t('中文1 in 中文3'), $t('中文2')]"></div>`
+  );
+});
+test("translate interpolation inside a v-for-in loop, including ` of `", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) in ['中文1 of 中文3', '中文2']"></div>`)
+  ).toBe(
+    `<div v-for="(item, index) in [$t('中文1 of 中文3'), $t('中文2')]"></div>`
+  );
+});
+test("translate interpolation inside a v-for-of loop", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) of ['中文1', '中文2']"></div>`)
+  ).toBe(`<div v-for="(item, index) of [$t('中文1'), $t('中文2')]"></div>`);
+});
+test("translate interpolation inside a v-for-of loop, including ` in `", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) of ['中文1 in 中文3', '中文2']"></div>`)
+  ).toBe(
+    `<div v-for="(item, index) of [$t('中文1 in 中文3'), $t('中文2')]"></div>`
+  );
+});
+test("translate interpolation inside a v-for-of loop, including ` of `", () => {
+  expect(
+    htmli18n(`<div v-for="(item, index) of ['中文1 of 中文3', '中文2']"></div>`)
+  ).toBe(
+    `<div v-for="(item, index) of [$t('中文1 of 中文3'), $t('中文2')]"></div>`
+  );
+});

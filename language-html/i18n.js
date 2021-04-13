@@ -1,4 +1,9 @@
 const { convertFilter, wrapWithTemplateLiteral } = require("./utils");
+const {
+  isVForOf,
+  vForOfPreprocess,
+  vForOfPostprocess,
+} = require("./utils/v-for-of");
 var languageJs = require("../language-js");
 
 const hasChinese = /[\u4e00-\u9fa5]/;
@@ -22,7 +27,7 @@ function dirI18n(node) {
   if (!hasChinese.test(node.value)) {
     return;
   }
-  //todo 处理v-for in of 的语法
+
   const { value } = node;
   try {
     if (
@@ -37,8 +42,21 @@ function dirI18n(node) {
       throw "notObject";
     }
   } catch (error) {
-    // console.log(error);
-    node.value = languageJs(convertFilter(value)).slice(0, -1);
+    console.log(error);
+
+    const getDirI18nValOfNotObject = (val) =>
+      languageJs(convertFilter(val)).slice(0, -1);
+
+    if (node.fullName === "v-for") {
+      const isVForOfVal = isVForOf(value);
+      let newValue = isVForOfVal ? vForOfPreprocess(value) : value;
+      newValue = getDirI18nValOfNotObject(newValue);
+      newValue = isVForOfVal ? vForOfPostprocess(newValue) : newValue;
+
+      node.value = newValue;
+    } else {
+      node.value = getDirI18nValOfNotObject(value);
+    }
   }
 }
 
