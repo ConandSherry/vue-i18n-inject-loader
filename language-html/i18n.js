@@ -85,7 +85,7 @@ function travserFunctionalNode(functionalNode) {
   // use `map()` like `forEach()`
   functionalNode.map((node) => {
     const { value: nodeValue } = node;
-    // TODO using languageJs() instead of regular expression
+    // todo better using languageJs() instead of regular expression
     if (
       hasChinese.test(nodeValue) &&
       /\$t/.test(nodeValue) &&
