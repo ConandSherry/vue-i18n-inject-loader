@@ -1,4 +1,5 @@
 const { convertFilter, wrapWithTemplateLiteral } = require("./utils");
+const { isObjectString } = require("./utils/is-object-string");
 const {
   isVForOf,
   vForOfPreprocess,
@@ -30,11 +31,7 @@ function dirI18n(node) {
 
   const { value } = node;
   try {
-    if (
-      value.slice(0, 1) === "{" &&
-      value.slice(-1) === "}" &&
-      JSON.stringify(value) //todo 这个有问题
-    ) {
+    if (isObjectString(value)) {
       node.value = languageJs(convertFilter(`(${value})`))
         .slice(0, -1)
         .slice(1, -1);
