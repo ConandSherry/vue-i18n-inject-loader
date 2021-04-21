@@ -93,22 +93,22 @@ describe("Support complex interpolations", () => {
 
 describe("Support functional component", () => {
   test("translate interpolation inside functional component", () => {
-    expect(htmli18n(`<template functional>中文</template>`)).toBe(
-      `<template functional>{{parent.$t(\`中文\`)}}</template>`
+    expect(htmli18n(`中文`, true)).toBe(
+      `{{parent.$t(\`中文\`)}}`
     );
   });
   test("translate interpolation inside child components of functional component", () => {
     expect(
-      htmli18n(`<template functional><button>中文</button></template>`)
+      htmli18n(`<button>中文</button>`, true)
     ).toBe(
-      `<template functional><button>{{parent.$t(\`中文\`)}}</button></template>`
+      `<button>{{parent.$t(\`中文\`)}}</button>`
     );
   });
   test("translate static attr inside child components of functional component", () => {
     expect(
-      htmli18n(`<template functional><button text="中文"></button></template>`)
+      htmli18n(`<button text="中文"></button>`, true)
     ).toBe(
-      `<template functional><button :text="parent.$t(\`中文\`)"></button></template>`
+      `<button :text="parent.$t(\`中文\`)"></button>`
     );
   });
 });

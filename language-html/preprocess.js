@@ -92,7 +92,7 @@ function isDirective(ast) {
   });
 }
 function isFunctional(ast) {
-  const rootNode = ast.children[0];
+  const rootNode = ast;
   if (
     rootNode.attrs &&
     rootNode.attrs.some(({ name }) => name === "functional")

@@ -8,7 +8,7 @@ module.exports = function (file) {
   if (parse.template) {
     file =
       file.slice(0, parse.template.start) +
-      languageHtml(parse.template.content) +
+      languageHtml(parse.template.content, parse.template.attrs.functional) +
       file.slice(parse.template.end);
   }
   parse = compiler.parseComponent(file);
