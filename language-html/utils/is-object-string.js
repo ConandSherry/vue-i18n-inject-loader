@@ -1,25 +1,15 @@
-function looseJsonParse(looseJsonStr, definitionStatements = "") {
+function looseJsonParse(looseJsonStr, definitionStatements = '') {
   try {
-    return Function(
-      `"use strict";${definitionStatements}return (` + looseJsonStr + `)`
-    )();
+    return Function(`"use strict";${definitionStatements}return (` + looseJsonStr + `)`)();
   } catch (error) {
     const matches = error.message.match(/^(.+) is not defined$/);
-    return (
-      matches &&
-      looseJsonParse(
-        looseJsonStr,
-        `${definitionStatements}const ${matches[1]} = 'foo-val';`
-      )
-    );
+    return matches && looseJsonParse(looseJsonStr, `${definitionStatements}const ${matches[1]} = 'foo-val';`);
   }
 }
 
 function isObjectString(str) {
   const obj = looseJsonParse(str);
-  return (
-    !!obj && Object.prototype.toString.call(obj) === Object.prototype.toString.call({})
-  );
+  return !!obj && Object.prototype.toString.call(obj) === Object.prototype.toString.call({});
 }
 
 module.exports = {

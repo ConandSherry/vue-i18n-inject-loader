@@ -1,17 +1,17 @@
-const { default: template } = require("@babel/template");
-const { default: traverse } = require("@babel/traverse");
-const { default: generate } = require("@babel/generator");
-const t = require("@babel/types");
-const prettierJS = require("prettier/parser-babel");
+const { default: template } = require('@babel/template');
+const { default: traverse } = require('@babel/traverse');
+const { default: generate } = require('@babel/generator');
+const t = require('@babel/types');
+const prettierJS = require('prettier/parser-babel');
 
 module.exports = {
   wrapWithTemplateLiteral(quasis = [], expressions = []) {
     quasis = quasis.map((value) =>
       // raw是带转义符的字符串 cooked是转义过的字符串
-      t.templateElement({ raw: value.replace(/`/g, "\\`") }, false)
+      t.templateElement({ raw: value.replace(/`/g, '\\`') }, false)
     );
     expressions = expressions.map((value) => {
-      const ast = prettierJS.parsers["babel-ts"].parse(convertFilter(value));
+      const ast = prettierJS.parsers['babel-ts'].parse(convertFilter(value));
       if (ast.program.body[0]) {
         return ast.program.body[0].expression;
       }
@@ -28,24 +28,24 @@ module.exports = {
 };
 
 function convertFilter(str) {
-  const ast = prettierJS.parsers["babel-ts"].parse(str);
+  const ast = prettierJS.parsers['babel-ts'].parse(str);
   const filters = [];
   let leftNode = null;
   traverse(ast, {
     BinaryExpression(path) {
       let { node } = path;
-      if (node.operator !== "|") {
+      if (node.operator !== '|') {
         return;
       }
       leftNode = node.left;
       node = node.right;
-      if (node.type === "Identifier") {
+      if (node.type === 'Identifier') {
         filters.push({
           name: node.name,
           args: [],
         });
       }
-      if (node.type === "CallExpression") {
+      if (node.type === 'CallExpression') {
         const args = node.arguments.map((node) => generate(node).code);
         filters.push({
           name: node.callee.name,
@@ -63,12 +63,10 @@ function convertFilter(str) {
   while (filters.length) {
     const current = filters.pop();
     current.args.unshift(firstArguments);
-    const buildRequire = template(
-      `$options.filters.%%functionName%%(%%argumentContent%%)`
-    );
+    const buildRequire = template(`$options.filters.%%functionName%%(%%argumentContent%%)`);
     const ast = buildRequire({
       functionName: t.identifier(current.name),
-      argumentContent: t.identifier(current.args.join(",")),
+      argumentContent: t.identifier(current.args.join(',')),
     });
     firstArguments = generate(ast).code.slice(0, -1);
   }

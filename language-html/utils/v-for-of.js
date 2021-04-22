@@ -1,8 +1,8 @@
-const prettierJs = require("prettier/parser-babel");
+const prettierJs = require('prettier/parser-babel');
 
-const V_FOR_OF_STR = " of ";
+const V_FOR_OF_STR = ' of ';
 const V_FOR_OF_RE = / of /;
-const V_FOR_IN_STR = " in ";
+const V_FOR_IN_STR = ' in ';
 const V_FOR_IN_RE = / in /;
 
 const isVForOf = (vForOfValue) => {
@@ -13,7 +13,7 @@ const isVForOf = (vForOfValue) => {
   return [left, rights.join(V_FOR_OF_STR)].every((seg) => {
     let ast;
     try {
-      ast = prettierJs.parsers["babel-ts"].parse(seg);
+      ast = prettierJs.parsers['babel-ts'].parse(seg);
     } catch (error) {
     } finally {
       return ast;

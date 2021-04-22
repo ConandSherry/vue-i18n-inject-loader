@@ -1,21 +1,14 @@
-const { convertFilter, wrapWithTemplateLiteral } = require("./utils");
-const { isObjectString } = require("./utils/is-object-string");
-const {
-  isVForOf,
-  vForOfPreprocess,
-  vForOfPostprocess,
-} = require("./utils/v-for-of");
-var languageJs = require("../language-js");
+const { convertFilter, wrapWithTemplateLiteral } = require('./utils');
+const { isObjectString } = require('./utils/is-object-string');
+const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
+var languageJs = require('../language-js');
 
 const hasChinese = /[\u4e00-\u9fa5]/;
 function textI18n(node) {
   if (!hasChinese.test(node.value)) {
     return;
   }
-  node.value = node.value.replace(
-    node.value.trim(),
-    `{{${languageJs(node.interpolationText).slice(0, -1)}}}`
-  );
+  node.value = node.value.replace(node.value.trim(), `{{${languageJs(node.interpolationText).slice(0, -1)}}}`);
 }
 function attrI18n(node) {
   if (!hasChinese.test(node.value)) {
@@ -36,15 +29,14 @@ function dirI18n(node) {
         .slice(0, -1)
         .slice(1, -1);
     } else {
-      throw "notObject";
+      throw 'notObject';
     }
   } catch (error) {
     console.log(error);
 
-    const getDirI18nValOfNotObject = (val) =>
-      languageJs(convertFilter(val)).slice(0, -1);
+    const getDirI18nValOfNotObject = (val) => languageJs(convertFilter(val)).slice(0, -1);
 
-    if (node.fullName === "v-for") {
+    if (node.fullName === 'v-for') {
       const isVForOfVal = isVForOf(value);
       let newValue = isVForOfVal ? vForOfPreprocess(value) : value;
       newValue = getDirI18nValOfNotObject(newValue);
@@ -83,12 +75,8 @@ function travserFunctionalNode(functionalNode) {
   functionalNode.map((node) => {
     const { value: nodeValue } = node;
     // todo better using languageJs() instead of regular expression
-    if (
-      hasChinese.test(nodeValue) &&
-      /\$t/.test(nodeValue) &&
-      !/parent\.\$t/.test(nodeValue)
-    ) {
-      node.value = nodeValue.replace(/\$t/, "parent.$t");
+    if (hasChinese.test(nodeValue) && /\$t/.test(nodeValue) && !/parent\.\$t/.test(nodeValue)) {
+      node.value = nodeValue.replace(/\$t/, 'parent.$t');
     }
   });
 }

@@ -5,16 +5,14 @@ module.exports = function serialize(node) {
     comment: (node) => `<!--${node.value}-->`,
     element: (node) => {
       const firstAttr = node.attrs[0];
-      const attrStr = firstAttr ? serialize(firstAttr) : "";
+      const attrStr = firstAttr ? serialize(firstAttr) : '';
       const tagName = node.name + attrStr;
 
       if (node.isSelfClosing) {
         return `<${tagName}/>`;
       }
 
-      return `<${tagName}>${
-        node.firstChild ? serialize(node.firstChild) : ""
-      }</${node.name}>`;
+      return `<${tagName}>${node.firstChild ? serialize(node.firstChild) : ''}</${node.name}>`;
     },
     directive: attribute,
     attribute,

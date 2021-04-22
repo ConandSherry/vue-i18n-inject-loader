@@ -1,5 +1,5 @@
 const dirRE = /^v-|^@|^:/;
-const { wrapWithTemplateLiteral } = require("./utils");
+const { wrapWithTemplateLiteral } = require('./utils');
 
 const PREPROCESS_PIPELINE = [
   isSelfClosing,
@@ -20,7 +20,7 @@ module.exports = function (ast) {
  * */
 function dealAttrNamespace(ast) {
   return ast.map((node) => {
-    if (node.type === "attribute") {
+    if (node.type === 'attribute') {
       node.name = node.namespace ? `${node.namespace}:${node.name}` : node.name;
     }
     return node;
@@ -36,7 +36,7 @@ function extractInterpolation(ast) {
     const newChildren = [];
 
     for (const child of node.children) {
-      if (child.type !== "text") {
+      if (child.type !== 'text') {
         newChildren.push(child);
         continue;
       }
@@ -45,7 +45,7 @@ function extractInterpolation(ast) {
         expressions = [];
 
       child.value
-        .replace(/\n +/g, " ") //deal with line break
+        .replace(/\n +/g, ' ') //deal with line break
         .trim()
         .split(interpolationRegex)
         .forEach((value, i) => {
@@ -75,17 +75,15 @@ function isSelfClosing(ast) {
     Object.assign(node, {
       isSelfClosing:
         !node.children ||
-        (node.type === "element" &&
-          (node.tagDefinition.isVoid ||
-            node.startSourceSpan === node.endSourceSpan)),
+        (node.type === 'element' && (node.tagDefinition.isVoid || node.startSourceSpan === node.endSourceSpan)),
     })
   );
 }
 function isDirective(ast) {
   return ast.map((node) => {
-    if (node.type === "attribute") {
+    if (node.type === 'attribute') {
       if (dirRE.test(node.name)) {
-        node.type = "directive";
+        node.type = 'directive';
       }
     }
     return node;
@@ -93,10 +91,7 @@ function isDirective(ast) {
 }
 function isFunctional(ast) {
   const rootNode = ast;
-  if (
-    rootNode.attrs &&
-    rootNode.attrs.some(({ name }) => name === "functional")
-  ) {
+  if (rootNode.attrs && rootNode.attrs.some(({ name }) => name === 'functional')) {
     Object.assign(ast, {
       isFunctional: true,
     });
@@ -105,24 +100,24 @@ function isFunctional(ast) {
 }
 function injectAttrSpace(ast) {
   return ast.map((node) => {
-    if (node.type !== "element") {
+    if (node.type !== 'element') {
       return node;
     }
     const newAttrs = [];
     const { attrs } = node;
     for (let index = 0; index < attrs.length; index++) {
       newAttrs.push({
-        name: " ",
+        name: ' ',
         value: null,
-        type: "attribute",
+        type: 'attribute',
       });
       newAttrs.push(attrs[index]);
     }
 
     newAttrs.push({
-      name: "",
+      name: '',
       value: null,
-      type: "attribute",
+      type: 'attribute',
     });
     return node.clone({
       attrs: newAttrs,

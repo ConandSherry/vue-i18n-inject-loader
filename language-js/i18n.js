@@ -1,7 +1,7 @@
-const { default: template } = require("@babel/template");
-const { default: traverse } = require("@babel/traverse");
-const { default: generate } = require("@babel/generator");
-const t = require("@babel/types");
+const { default: template } = require('@babel/template');
+const { default: traverse } = require('@babel/traverse');
+const { default: generate } = require('@babel/generator');
+const t = require('@babel/types');
 const hasChinese = /[\u4e00-\u9fa5]/;
 /**
  * todo 字符串相加合并为模板字符串
@@ -9,11 +9,7 @@ const hasChinese = /[\u4e00-\u9fa5]/;
  */
 function prevent$tRecursive(fn) {
   return (path) => {
-    if (
-      path.parent &&
-      t.isCallExpression(path.parent) &&
-      t.isIdentifier(path.parent.callee, { name: "$t" })
-    ) {
+    if (path.parent && t.isCallExpression(path.parent) && t.isIdentifier(path.parent.callee, { name: '$t' })) {
       return;
     }
     fn(path);
@@ -70,10 +66,10 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
   translateSimpleLiteral(path);
 });
 const directiveLiteralI18n = prevent$tRecursive((path) => {
-  path.parent.type = "ExpressionStatement";
+  path.parent.type = 'ExpressionStatement';
   path.replaceWith(t.stringLiteral(path.node.value));
   translateSimpleLiteral(path);
-  path.parent.type = "Directive";
+  path.parent.type = 'Directive';
 });
 
 module.exports = function serialize(ast) {
