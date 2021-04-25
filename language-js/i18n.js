@@ -32,12 +32,11 @@ const stringLiteralI18n = prevent$tRecursive((path) => {
 });
 const templateLiteralI18n = prevent$tRecursive((path) => {
   const { node } = path;
-  let includedExp = [];
+
   //若模板字符串中的表达式存在，则提取出来，转为符合i18n格式的字符串
   if (node.expressions.length) {
-    const stringContent = []
-      .concat(node.quasis)
-      .concat(node.expressions)
+    const includedExp = [];
+    const stringContent = [...node.quasis, ...node.expressions]
       .sort((a, b) => a.start - b.start)
       .map((node) => {
         if (t.isTemplateElement(node)) {
@@ -67,7 +66,13 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
       })
     );
     return;
+  } else {
+    const quasisContent = node.quasis.map((node) => node.value.cooked).join(''); // raw是带转义符的字符串 cooked是转义过的字符串
+    if (!hasChinese.test(quasisContent)) {
+      return;
+    }
   }
+
   translateSimpleLiteral(path);
 });
 const directiveLiteralI18n = prevent$tRecursive((path) => {
