@@ -47,7 +47,12 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
         includedExp.push(node);
         return `{param${includedExp.length - 1}}`;
       })
-      .reduce((str, value) => str + value);
+      .join('');
+
+    if (!hasChinese.test(stringContent)) {
+      return;
+    }
+
     path.replaceWith(t.StringLiteral(stringContent));
 
     const properties = [];

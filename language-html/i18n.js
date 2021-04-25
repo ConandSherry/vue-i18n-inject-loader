@@ -32,7 +32,7 @@ function dirI18n(node) {
       throw 'notObject';
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     const getDirI18nValOfNotObject = (val) => languageJs(convertFilter(val)).slice(0, -1);
 
