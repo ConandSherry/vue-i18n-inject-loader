@@ -76,6 +76,9 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
   translateSimpleLiteral(path);
 });
 const directiveLiteralI18n = prevent$tRecursive((path) => {
+  if (!hasChinese.test(path.node.value)) {
+    return;
+  }
   path.parent.type = 'ExpressionStatement';
   path.replaceWith(t.stringLiteral(path.node.value));
   translateSimpleLiteral(path);
