@@ -52,7 +52,7 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
       return;
     }
 
-    path.replaceWith(t.StringLiteral(stringContent));
+    path.replaceWith(t.TemplateLiteral([t.templateElement({ raw: stringContent })], []));
 
     const properties = [];
     includedExp.forEach((exp, index) => {

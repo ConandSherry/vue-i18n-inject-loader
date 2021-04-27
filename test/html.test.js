@@ -54,20 +54,16 @@ describe('Support complex interpolations', () => {
   test('translate interpolation only', () => {
     expect(htmli18n(`<div>{{"中文"}}</div>`)).toBe(`<div>{{$t("中文")}}</div>`);
   });
+
   test('translate interpolation and static content', () => {
-    expect(htmli18n(`<div>中文{{"中文"}}</div>`)).toBe(
-      `<div>{{$t("中文{param0}", {
-  param0: $t("中文")
+    expect(htmli18n(`<div>中文1{{"中文2"}}</div>`)).toBe(
+      `<div>{{$t(\`中文1{param0}\`, {
+  param0: $t("中文2")
 })}}</div>`
     );
   });
-  test('translate interpolation with escape', () => {
-    expect(htmli18n(`<div>中文""{{arg}}</div>`)).toBe(`<div>{{$t("中文\\"\\"{param0}", {
-  param0: arg
-})}}</div>`);
-  });
 
-  test("don't translate interpolation with recursive $t", () => {
+  test('do NOT translate interpolation with recursive $t', () => {
     expect(htmli18n(`<div>{{$t(\`中文\`)}}</div>`)).toBe(`<div>{{$t(\`中文\`)}}</div>`);
   });
 });
