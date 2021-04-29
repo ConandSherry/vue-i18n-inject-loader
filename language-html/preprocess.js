@@ -1,5 +1,5 @@
 const dirRE = /^v-|^@|^:/;
-const { wrapWithTemplateLiteral } = require('./utils');
+const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 
 const PREPROCESS_PIPELINE = [
   isSelfClosing,

@@ -1,5 +1,6 @@
-const { convertFilter, wrapWithTemplateLiteral } = require('./utils');
+const { convertFilter } = require('./utils/convert-filter');
 const { isObjectString } = require('./utils/is-object-string');
+const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
 var languageJs = require('../language-js');
 
