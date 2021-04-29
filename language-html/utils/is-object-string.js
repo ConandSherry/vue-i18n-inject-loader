@@ -1,10 +1,10 @@
-const prettierJS = require('prettier/parser-babel');
+const { vueExpressionParse } = require('../../parse');
 
 function isObjectString(str) {
-    const { type } = prettierJS.parsers['__vue_expression'].parse(str);
-    return type === 'ObjectExpression';
+  const { type } = vueExpressionParse(str);
+  return type === 'ObjectExpression';
 }
 
 module.exports = {
-    isObjectString,
+  isObjectString,
 };

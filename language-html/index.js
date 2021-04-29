@@ -1,4 +1,4 @@
-const prettierHtml = require('prettier/parser-html');
+const { htmlParse } = require('../parse');
 const preprocess = require('./preprocess');
 const serialize = require('./serialize');
 const i18n = require('./i18n');
@@ -10,7 +10,7 @@ module.exports = function (htmlStr, isFunctional = false) {
    */
   const tplWrapper = isFunctional ? ['<template functional>', '</template>'] : ['<template>', '</template>'];
   htmlStr = tplWrapper.join(htmlStr);
-  let { firstChild: astNode } = prettierHtml.parsers.vue.parse(htmlStr, null, {
+  let { firstChild: astNode } = htmlParse(htmlStr, null, {
     filepath: 'htmlStr.html',
   });
   astNode = preprocess(astNode);

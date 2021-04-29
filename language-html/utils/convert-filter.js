@@ -2,9 +2,9 @@ const { default: template } = require('@babel/template');
 const { default: traverse } = require('@babel/traverse');
 const { default: generate } = require('@babel/generator');
 const t = require('@babel/types');
-const prettierJS = require('prettier/parser-babel');
+const { jsParse } = require('../../parse');
 function convertFilter(str) {
-  const ast = prettierJS.parsers['babel-ts'].parse(str);
+  const ast = jsParse(str);
   const filters = [];
   let leftNode = null;
   traverse(ast, {

@@ -1,7 +1,8 @@
 const { default: generate } = require('@babel/generator');
 const { convertFilter } = require('./convert-filter');
 const t = require('@babel/types');
-const prettierJS = require('prettier/parser-babel');
+const { jsParse } = require('../../parse');
+
 module.exports = {
   wrapWithTemplateLiteral(quasis = [], expressions = []) {
     quasis = quasis.map((value) =>
@@ -9,7 +10,7 @@ module.exports = {
       t.templateElement({ raw: value.replace(/`/g, '\\`') }, false)
     );
     expressions = expressions.map((value) => {
-      const ast = prettierJS.parsers['babel-ts'].parse(convertFilter(value));
+      const ast = jsParse(convertFilter(value));
       if (ast.program.body[0]) {
         return ast.program.body[0].expression;
       }
