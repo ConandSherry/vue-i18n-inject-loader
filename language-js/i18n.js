@@ -6,6 +6,7 @@ const hasChinese = /[\u4e00-\u9fa5]/;
 /**
  * todo 字符串相加合并为模板字符串
  * todo text解析模板都在js里面处理，在js里去合并?统一babel parse入口
+ * todo 处理str 是html字符串的情况
  */
 function prevent$tRecursive(fn) {
   return (path) => {
