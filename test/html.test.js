@@ -26,6 +26,9 @@ describe('Support attributes', () => {
   test('translate static attr', () => {
     expect(htmli18n(`<div pre-attr="中文"></div>`)).toBe(`<div :pre-attr="$t(\`中文\`)"></div>`);
   });
+  test('translate attr while keep single quotes', () => {
+    expect(htmli18n(`<div :attr="'中文'"></div>`)).toBe(`<div :attr="$t('中文')"></div>`);
+  });
   test('translate attr with escape', () => {
     expect(htmli18n(`<div attr="\`中文\`"></div>`)).toBe(`<div :attr="$t(\`\\\`中文\\\`\`)"></div>`);
   });

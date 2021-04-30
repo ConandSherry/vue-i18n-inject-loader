@@ -81,7 +81,12 @@ const directiveLiteralI18n = prevent$tRecursive((path) => {
     return;
   }
   path.parent.type = 'ExpressionStatement';
-  path.replaceWith(t.stringLiteral(path.node.value));
+
+  const { extra, value } = path.node;
+  const stringLiteral = t.stringLiteral(value);
+  stringLiteral.extra = extra; // Need extra property to determine type of quotation mark
+
+  path.replaceWith(stringLiteral);
   translateSimpleLiteral(path);
   path.parent.type = 'Directive';
 });
