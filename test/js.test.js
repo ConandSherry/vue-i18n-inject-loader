@@ -1,5 +1,12 @@
 const jsi18n = require('../language-js');
 
+describe('Support TypeScript', () => {
+  const tsGenericStr = `class GenericNumber<NumType> {}`;
+  test('support generics of ts', () => {
+    expect(jsi18n(tsGenericStr.trim())).toBe(tsGenericStr.trim());
+  });
+});
+
 describe('Keep the type of string', () => {
   test('translate single quotes strings', () => {
     expect(jsi18n(`const str = '中文';`)).toBe(`const str = $t('中文');`);

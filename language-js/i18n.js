@@ -86,11 +86,17 @@ const directiveLiteralI18n = prevent$tRecursive((path) => {
   path.parent.type = 'Directive';
 });
 
+const handleTsTypeParameter = (path) => {
+  path.node.name = path.node.name.name;
+};
+
 module.exports = function serialize(ast) {
   traverse(ast, {
     StringLiteral: stringLiteralI18n,
     DirectiveLiteral: directiveLiteralI18n,
     TemplateLiteral: templateLiteralI18n,
+    // Handle bad case
+    TSTypeParameter: handleTsTypeParameter,
   });
   return generate(ast, {
     jsescOption: {
