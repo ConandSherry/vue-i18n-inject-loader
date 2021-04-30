@@ -13,30 +13,17 @@ function attrI18n(node) {
 }
 function dirI18n(node) {
   const { value } = node;
-  try {
-    if (isObjectString(value)) {
-      node.value = languageJs(convertFilter(`(${value})`))
-        .slice(0, -1)
-        .slice(1, -1);
-    } else {
-      throw 'notObject';
-    }
-  } catch (error) {
-    // console.log(error);
+  const jsPipe = (v) => languageJs(convertFilter(v)).slice(0, -1); // slice -1 to remove semicolon
+  let pipes = [jsPipe];
 
-    const getDirI18nValOfNotObject = (val) => languageJs(convertFilter(val)).slice(0, -1);
-
-    if (node.fullName === 'v-for') {
-      const isVForOfVal = isVForOf(value);
-      let newValue = isVForOfVal ? vForOfPreprocess(value) : value;
-      newValue = getDirI18nValOfNotObject(newValue);
-      newValue = isVForOfVal ? vForOfPostprocess(newValue) : newValue;
-
-      node.value = newValue;
-    } else {
-      node.value = getDirI18nValOfNotObject(value);
-    }
+  if (isObjectString(value)) {
+    const addParentheses = (v) => `(${v})`;
+    const removeParentheses = (v) => v.slice(1, -1);
+    pipes = [addParentheses, jsPipe, removeParentheses];
+  } else if (node.fullName === 'v-for' && isVForOf(value)) {
+    pipes = [vForOfPreprocess, jsPipe, vForOfPostprocess];
   }
+  node.value = pipes.reduce((value, pipe) => pipe(value), value);
 }
 
 function travserNode(node) {
