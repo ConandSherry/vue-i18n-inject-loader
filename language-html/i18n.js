@@ -13,15 +13,18 @@ function attrI18n(node) {
 }
 function dirI18n(node) {
   const { value } = node;
-  const jsPipe = (v) => languageJs(convertFilter(v)).slice(0, -1); // slice -1 to remove semicolon
-  let pipes = [jsPipe];
+
+  const removeSemicolon = (v) => v.slice(0, -1);
+  const jsPipes = [convertFilter, languageJs, removeSemicolon];
+
+  let pipes = [...jsPipes];
 
   if (isObjectString(value)) {
     const addParentheses = (v) => `(${v})`;
     const removeParentheses = (v) => v.slice(1, -1);
-    pipes = [addParentheses, jsPipe, removeParentheses];
+    pipes = [addParentheses, ...jsPipes, removeParentheses];
   } else if (node.fullName === 'v-for' && isVForOf(value)) {
-    pipes = [vForOfPreprocess, jsPipe, vForOfPostprocess];
+    pipes = [vForOfPreprocess, ...jsPipes, vForOfPostprocess];
   }
   node.value = pipes.reduce((value, pipe) => pipe(value), value);
 }
