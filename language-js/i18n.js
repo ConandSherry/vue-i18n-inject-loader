@@ -99,6 +99,7 @@ module.exports = function serialize(ast) {
     TSTypeParameter: handleTsTypeParameter,
   });
   return generate(ast, {
+    decoratorsBeforeExport: true, // TODO: needed by prettier, NOT SURE if needed by loader itself. So NEED to make sure in real projects...
     jsescOption: {
       minimal: true,
     },
