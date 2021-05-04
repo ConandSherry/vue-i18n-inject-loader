@@ -1,4 +1,3 @@
-const { convertFilter } = require('./utils/convert-filter');
 const { isObjectString } = require('./utils/is-object-string');
 const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
@@ -15,7 +14,7 @@ function dirI18n(node) {
   const { value } = node;
 
   const removeSemicolon = (v) => v.slice(0, -1);
-  const jsPipes = [convertFilter, languageJs, removeSemicolon];
+  const jsPipes = [languageJs, removeSemicolon];
 
   let pipes = [...jsPipes];
 

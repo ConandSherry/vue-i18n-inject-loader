@@ -1,4 +1,4 @@
-const { jsParse } = require('../../parse');
+const { vueExpressionParse } = require('../../parse');
 
 const V_FOR_OF_STR = ' of ';
 const V_FOR_OF_RE = / of /;
@@ -13,7 +13,7 @@ const isVForOf = (vForOfValue) => {
   return [left, rights.join(V_FOR_OF_STR)].every((seg) => {
     let ast;
     try {
-      ast = jsParse(seg);
+      ast = vueExpressionParse(seg);
     } catch (error) {
     } finally {
       return ast;

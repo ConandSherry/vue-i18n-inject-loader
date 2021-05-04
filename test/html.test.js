@@ -48,7 +48,7 @@ describe('Support directives', () => {
   });
   test('translate directive with filter', () => {
     expect(htmli18n(`<div :attr="'中文' | filterOne('str', arg,a+b) | filterTwo | filterThree(arg,arg)"></div>`)).toBe(
-      `<div :attr="$options.filters.filterThree($options.filters.filterTwo($options.filters.filterOne($t('中文'), 'str', arg, a + b)), arg, arg)"></div>`
+      `<div :attr="$t('中文') | filterOne('str', arg, a + b) | filterTwo | filterThree(arg, arg)"></div>`
     );
   });
 });
