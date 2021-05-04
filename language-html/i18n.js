@@ -1,31 +1,34 @@
-const { isObjectString } = require('./utils/is-object-string');
 const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
-const languageJs = require('../language-js');
+const vueExpression = require('../language-js/vue-expression');
+
+const throughPipes = (val, pipes) => pipes.reduce((v, pipe) => pipe(v), val);
+const addArrayWrapper = (v) => `[${v}]`;
+const removeArrayWrapper = (v) => v.slice(1, -1);
+const DEFAULT_PIPES = [addArrayWrapper, vueExpression, removeArrayWrapper];
 
 function textI18n(node) {
-  node.value = node.value.replace(node.value.trim(), `{{${languageJs(node.interpolationText).slice(0, -1)}}}`);
+  const { interpolationText, value } = node;
+  const newInterpolationText = throughPipes(interpolationText, DEFAULT_PIPES);
+  node.value = value.replace(value.trim(), `{{${newInterpolationText}}}`);
 }
+
 function attrI18n(node) {
-  node.value = languageJs(wrapWithTemplateLiteral([node.value])).slice(0, -1);
+  const templateLiteral = wrapWithTemplateLiteral([node.value]);
+  node.value = throughPipes(templateLiteral, DEFAULT_PIPES);
   node.name = `:${node.name}`;
 }
+
 function dirI18n(node) {
   const { value } = node;
 
-  const removeSemicolon = (v) => v.slice(0, -1);
-  const jsPipes = [languageJs, removeSemicolon];
+  let pipes = DEFAULT_PIPES;
 
-  let pipes = [...jsPipes];
-
-  if (isObjectString(value)) {
-    const addParentheses = (v) => `(${v})`;
-    const removeParentheses = (v) => v.slice(1, -1);
-    pipes = [addParentheses, ...jsPipes, removeParentheses];
-  } else if (node.fullName === 'v-for' && isVForOf(value)) {
-    pipes = [vForOfPreprocess, ...jsPipes, vForOfPostprocess];
+  if (node.fullName === 'v-for' && isVForOf(value)) {
+    pipes = [vForOfPreprocess, vueExpression, vForOfPostprocess];
   }
-  node.value = pipes.reduce((value, pipe) => pipe(value), value);
+
+  node.value = throughPipes(value, pipes);
 }
 
 function travserNode(node) {
@@ -53,7 +56,7 @@ function travserFunctionalNode(functionalNode) {
   // use `map()` like `forEach()`
   functionalNode.map((node) => {
     const { value: nodeValue } = node;
-    // todo better using languageJs() instead of regular expression
+    // todo better using vueExpression() instead of regular expression
     const hasChinese = /[\u4e00-\u9fa5]/;
     if (hasChinese.test(nodeValue) && /\$t/.test(nodeValue) && !/parent\.\$t/.test(nodeValue)) {
       node.value = nodeValue.replace(/\$t/, 'parent.$t');

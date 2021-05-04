@@ -95,13 +95,14 @@ const handleTsTypeParameter = (path) => {
   path.node.name = path.node.name.name;
 };
 
-module.exports = function serialize(ast) {
+module.exports = function serialize(ast, noScope = false) {
   traverse(ast, {
     StringLiteral: stringLiteralI18n,
     DirectiveLiteral: directiveLiteralI18n,
     TemplateLiteral: templateLiteralI18n,
     // Handle bad case
     TSTypeParameter: handleTsTypeParameter,
+    noScope,
   });
   return generate(ast, {
     decoratorsBeforeExport: true, // TODO: needed by prettier, NOT SURE if needed by loader itself. So NEED to make sure in real projects...
