@@ -46,10 +46,17 @@ describe('Support directives', () => {
   hammertime: hammertime
 }"></div>`);
   });
-  test('translate directive with filter', () => {
+
+  test('translate directive with filter, where a string goes through multiple filters', () => {
     expect(htmli18n(`<div :attr="'中文' | filterOne('str', arg,a+b) | filterTwo | filterThree(arg,arg)"></div>`)).toBe(
       `<div :attr="$t('中文') | filterOne('str', arg, a + b) | filterTwo | filterThree(arg, arg)"></div>`
     );
+  });
+
+  test('translate directive with filter, where an object goes through a filter', () => {
+    expect(htmli18n(`<div :attr="{ key: '中文' } | filter"></div>`)).toBe(`<div :attr="{
+  key: $t('中文')
+} | filter"></div>`);
   });
 });
 
