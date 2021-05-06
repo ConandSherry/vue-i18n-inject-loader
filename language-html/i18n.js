@@ -51,7 +51,7 @@ function travserFunctionalNode(functionalNode) {
   // use `map()` like `forEach()`
   functionalNode.map((node) => {
     const { value: nodeValue } = node;
-    // todo better using vueExpression() instead of regular expression
+    // todo better: using vueExpression() instead of regular expression
     const hasChinese = /[\u4e00-\u9fa5]/;
     if (hasChinese.test(nodeValue) && /\$t/.test(nodeValue) && !/parent\.\$t/.test(nodeValue)) {
       node.value = nodeValue.replace(/\$t/, 'parent.$t');
