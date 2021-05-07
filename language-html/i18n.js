@@ -2,33 +2,28 @@ const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal'
 const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
 const vueExpression = require('../language-js/vue-expression');
 
-const throughPipes = (val, pipes) => pipes.reduce((v, pipe) => pipe(v), val);
-const addArrayWrapper = (v) => `[${v}]`;
-const removeArrayWrapper = (v) => v.slice(1, -1);
-const DEFAULT_PIPES = [addArrayWrapper, vueExpression, removeArrayWrapper];
-
 function textI18n(node) {
   const { interpolationText, value } = node;
-  const newInterpolationText = throughPipes(interpolationText, DEFAULT_PIPES);
+  const newInterpolationText = vueExpression(interpolationText);
   node.value = value.replace(value.trim(), `{{${newInterpolationText}}}`);
 }
 
 function attrI18n(node) {
   const templateLiteral = wrapWithTemplateLiteral([node.value]);
-  node.value = throughPipes(templateLiteral, DEFAULT_PIPES);
+  node.value = vueExpression(templateLiteral);
   node.name = `:${node.name}`;
 }
 
 function dirI18n(node) {
   const { value } = node;
 
-  let pipes = DEFAULT_PIPES;
+  let pipes = [vueExpression];
 
   if (node.fullName === 'v-for' && isVForOf(value)) {
     pipes = [vForOfPreprocess, vueExpression, vForOfPostprocess];
   }
 
-  node.value = throughPipes(value, pipes);
+  node.value = pipes.reduce((v, pipe) => pipe(v), value);
 }
 
 function travserNode(node) {
