@@ -91,6 +91,26 @@ const directiveLiteralI18n = prevent$tRecursive((path) => {
   path.parent.type = 'Directive';
 });
 
+const jsxTextI18n = (path) => {
+  if (!hasChinese.test(path.node.value)) {
+    return;
+  }
+  const { value } = path.node;
+  const templateLiteral = t.TemplateLiteral(
+    [t.templateElement({ cooked: value, raw: value.replace(/`/g, '\\`') })],
+    []
+  );
+  path.replaceWith(t.jsxExpressionContainer(templateLiteral));
+};
+
+const jsxAttributeI18n = (path) => {
+  const attrValueNode = path.node.value;
+  if (hasChinese.test(attrValueNode.value) && t.isStringLiteral(attrValueNode)) {
+    path.get('value').replaceWith(t.jsxExpressionContainer(attrValueNode));
+    return;
+  }
+};
+
 const handleTsTypeParameter = (path) => {
   path.node.name = path.node.name.name;
 };
@@ -100,6 +120,8 @@ module.exports = function serialize(ast, noScope = false) {
     StringLiteral: stringLiteralI18n,
     DirectiveLiteral: directiveLiteralI18n,
     TemplateLiteral: templateLiteralI18n,
+    JSXText: jsxTextI18n,
+    JSXAttribute: jsxAttributeI18n,
     // Handle bad case
     TSTypeParameter: handleTsTypeParameter,
     noScope,

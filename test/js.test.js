@@ -1,5 +1,18 @@
 const jsi18n = require('../language-js');
 
+describe('Support jsx', () => {
+  test('translate static strings', () => {
+    expect(jsi18n('const js = <span>中文</span>;')).toBe('const js = <span>{$t(`中文`)}</span>;');
+  });
+  test('translate backtick strings with escape', () => {
+    expect(jsi18n('const js = <span>中`文</span>;')).toBe('const js = <span>{$t(`中\\`文`)}</span>;');
+  });
+
+  test('translate attributes', () => {
+    expect(jsi18n('const js = <span attr="中文"></span>;')).toBe('const js = <span attr={$t("中文")}></span>;');
+  });
+});
+
 describe('Support TypeScript', () => {
   const tsGenericStr = `class GenericNumber<NumType> {}`;
   test('support generics of ts', () => {
