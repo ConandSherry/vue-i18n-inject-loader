@@ -59,8 +59,8 @@ describe('Support complex interpolations', () => {
   });
 
   test('translate interpolation and static content', () => {
-    expect(htmli18n(`<div>中文1{{"中文2"}}</div>`)).toBe(
-      `<div>{{$t(\`中文1{param0}\`, {
+    expect(htmli18n(`<div>中\`文1{{"中文2"}}</div>`)).toBe(
+      `<div>{{$t(\`中\\\`文1{param0}\`, {
   param0: $t("中文2")
 })}}</div>`
     );

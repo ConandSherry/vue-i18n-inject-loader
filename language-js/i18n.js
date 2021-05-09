@@ -41,8 +41,8 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
       .sort((a, b) => a.start - b.start)
       .map((node) => {
         if (t.isTemplateElement(node)) {
-          // raw是带转义符的字符串 cooked是转义过的字符串
-          return node.value.cooked;
+          // raw是带转义符的字符串
+          return node.value.raw;
         }
         includedExp.push(node);
         return `{param${includedExp.length - 1}}`;
@@ -68,7 +68,7 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
     );
     return;
   } else {
-    const quasisContent = node.quasis.map((node) => node.value.cooked).join(''); // raw是带转义符的字符串 cooked是转义过的字符串
+    const quasisContent = node.quasis.map((node) => node.value.raw).join(''); // raw是带转义符的字符串
     if (!hasChinese.test(quasisContent)) {
       return;
     }
@@ -96,10 +96,7 @@ const jsxTextI18n = (path) => {
     return;
   }
   const { value } = path.node;
-  const templateLiteral = t.TemplateLiteral(
-    [t.templateElement({ cooked: value, raw: value.replace(/`/g, '\\`') })],
-    []
-  );
+  const templateLiteral = t.TemplateLiteral([t.templateElement({ raw: value.replace(/`/g, '\\`') })], []);
   path.replaceWith(t.jsxExpressionContainer(templateLiteral));
 };
 

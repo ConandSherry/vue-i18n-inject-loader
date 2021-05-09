@@ -5,7 +5,7 @@ const { vueExpressionParse } = require('../../parse');
 module.exports = {
   wrapWithTemplateLiteral(quasis = [], expressions = []) {
     quasis = quasis.map((value) =>
-      // raw是带转义符的字符串 cooked是转义过的字符串
+      // raw是带转义符的字符串
       t.templateElement({ raw: value.replace(/`/g, '\\`') }, false)
     );
     expressions = expressions.map((value) => vueExpressionParse(value));
