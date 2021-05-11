@@ -1,6 +1,7 @@
 const { default: template } = require('@babel/template');
 const { default: traverse } = require('@babel/traverse');
 const { default: generate } = require('@babel/generator');
+const { stringConcatenation } = require('./utils/string-concatenation');
 const t = require('@babel/types');
 const hasChinese = /[\u4e00-\u9fa5]/;
 /**
@@ -119,6 +120,7 @@ module.exports = function serialize(ast, noScope = false) {
     TemplateLiteral: templateLiteralI18n,
     JSXText: jsxTextI18n,
     JSXAttribute: jsxAttributeI18n,
+    BinaryExpression: stringConcatenation,
     // Handle bad case
     TSTypeParameter: handleTsTypeParameter,
     noScope,

@@ -61,3 +61,37 @@ export function fooFn(dataurl) {
     expect(jsi18n(stringWithEnglishTemplateLiterals.trim())).toBe(stringWithEnglishTemplateLiterals.trim());
   });
 });
+
+describe('Template string', () => {
+  test('should not convert non-concatenated strings', () => {
+    expect(jsi18n('const result = "test";')).toBe('const result = "test";');
+  });
+
+  test('should not convert non-string binary expressions with + operator', () => {
+    expect(jsi18n('const result = 1 + 2;')).toBe('const result = 1 + 2;');
+  });
+
+  test('should not convert without Chinese', () => {
+    expect(jsi18n('const result = "Hello " + " World!";')).toBe('const result = "Hello " + " World!";');
+  });
+
+  test('convert string with multi variables concatenation', () => {
+    expect(jsi18n('const result = "中文: " + str1 + str2;')).toBe(`const result = $t(\`中文: {param0}{param1}\`, {
+  param0: str1,
+  param1: str2
+});`);
+  });
+
+  test('should convert parenthized string concatenations', () => {
+    expect(jsi18n('"中文 " + (x + " 中文");')).toBe(`$t(\`中文 {param0} 中文\`, {
+  param0: x
+});`);
+  });
+
+  test('should convert parenthized non-string concatenations', () => {
+    expect(jsi18n('(x + y) + " 中文 " + (a + b);')).toBe(`$t(\`{param0} 中文 {param1}\`, {
+  param0: x + y,
+  param1: a + b
+});`);
+  });
+});
