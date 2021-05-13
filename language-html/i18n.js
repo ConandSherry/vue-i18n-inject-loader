@@ -1,6 +1,7 @@
 const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 const { isVForOf, vForOfPreprocess, vForOfPostprocess } = require('./utils/v-for-of');
 const vueExpression = require('../language-js/vue-expression');
+const { CN_RE, ensureChinese } = require('../utils/is-cn');
 
 function textI18n(node) {
   const { interpolationText, value } = node;
@@ -28,7 +29,7 @@ function dirI18n(node) {
 
 function travserNode(node) {
   const handler = {
-    text: hasChinese(textI18n),
+    text: ensureChinese(textI18n),
     element: (node) => {
       node.attrs.forEach((attr) => {
         travserNode(attr);
@@ -37,8 +38,8 @@ function travserNode(node) {
         travserNode(node);
       });
     },
-    attribute: hasChinese(attrI18n),
-    directive: hasChinese(dirI18n),
+    attribute: ensureChinese(attrI18n),
+    directive: ensureChinese(dirI18n),
     comment: (node) => node,
   };
   handler[node.type](node);
@@ -52,8 +53,7 @@ function travserFunctionalNode(functionalNode) {
   functionalNode.map((node) => {
     const { value: nodeValue } = node;
     // todo better: using vueExpression() instead of regular expression
-    const hasChinese = /[\u4e00-\u9fa5]/;
-    if (hasChinese.test(nodeValue) && /\$t/.test(nodeValue) && !/parent\.\$t/.test(nodeValue)) {
+    if (CN_RE.test(nodeValue) && /\$t/.test(nodeValue) && !/parent\.\$t/.test(nodeValue)) {
       node.value = nodeValue.replace(/\$t/, 'parent.$t');
     }
   });
@@ -63,11 +63,3 @@ module.exports = function init(node) {
   travserNode(node);
   travserFunctionalNode(node);
 };
-function hasChinese(fn) {
-  return function (node) {
-    if (!/[\u4e00-\u9fa5]/.test(node.value)) {
-      return;
-    }
-    fn(node);
-  };
-}

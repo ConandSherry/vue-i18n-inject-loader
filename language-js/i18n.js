@@ -1,13 +1,12 @@
 const { default: template } = require('@babel/template');
 const { default: traverse } = require('@babel/traverse');
 const { default: generate } = require('@babel/generator');
-const { stringConcatenation } = require('./utils/string-concatenation');
 const t = require('@babel/types');
-const hasChinese = /[\u4e00-\u9fa5]/;
+const { stringConcatenation } = require('./utils/string-concatenation');
+const { CN_RE } = require('../utils/is-cn');
+
 /**
- * todo 字符串相加合并为模板字符串
  * todo text解析模板都在js里面处理，在js里去合并?统一babel parse入口
- * todo 处理str 是html字符串的情况
  */
 function prevent$tRecursive(fn) {
   return (path) => {
@@ -27,7 +26,7 @@ function translateSimpleLiteral(path) {
 }
 const stringLiteralI18n = prevent$tRecursive((path) => {
   const { node } = path;
-  if (!hasChinese.test(node.value)) {
+  if (!CN_RE.test(node.value)) {
     return;
   }
   translateSimpleLiteral(path);
@@ -50,7 +49,7 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
       })
       .join('');
 
-    if (!hasChinese.test(stringContent)) {
+    if (!CN_RE.test(stringContent)) {
       return;
     }
 
@@ -70,7 +69,7 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
     return;
   } else {
     const quasisContent = node.quasis.map((node) => node.value.raw).join(''); // raw是带转义符的字符串
-    if (!hasChinese.test(quasisContent)) {
+    if (!CN_RE.test(quasisContent)) {
       return;
     }
   }
@@ -78,7 +77,7 @@ const templateLiteralI18n = prevent$tRecursive((path) => {
   translateSimpleLiteral(path);
 });
 const directiveLiteralI18n = prevent$tRecursive((path) => {
-  if (!hasChinese.test(path.node.value)) {
+  if (!CN_RE.test(path.node.value)) {
     return;
   }
   path.parent.type = 'ExpressionStatement';
@@ -93,7 +92,7 @@ const directiveLiteralI18n = prevent$tRecursive((path) => {
 });
 
 const jsxTextI18n = (path) => {
-  if (!hasChinese.test(path.node.value)) {
+  if (!CN_RE.test(path.node.value)) {
     return;
   }
   const { value } = path.node;
@@ -103,7 +102,7 @@ const jsxTextI18n = (path) => {
 
 const jsxAttributeI18n = (path) => {
   const attrValueNode = path.node.value;
-  if (hasChinese.test(attrValueNode.value) && t.isStringLiteral(attrValueNode)) {
+  if (CN_RE.test(attrValueNode.value) && t.isStringLiteral(attrValueNode)) {
     path.get('value').replaceWith(t.jsxExpressionContainer(attrValueNode));
     return;
   }
@@ -120,6 +119,7 @@ module.exports = function serialize(ast, noScope = false) {
     TemplateLiteral: templateLiteralI18n,
     JSXText: jsxTextI18n,
     JSXAttribute: jsxAttributeI18n,
+    // Enhance writing of strings
     BinaryExpression: stringConcatenation,
     // Handle bad case
     TSTypeParameter: handleTsTypeParameter,
