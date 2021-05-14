@@ -3,6 +3,7 @@ const { default: traverse } = require('@babel/traverse');
 const { default: generate } = require('@babel/generator');
 const t = require('@babel/types');
 const { stringConcatenation } = require('./utils/string-concatenation');
+const { addI18nKeys } = require('../utils/i18n-keys');
 const { CN_RE } = require('../utils/is-cn');
 
 /**
@@ -11,6 +12,14 @@ const { CN_RE } = require('../utils/is-cn');
 function prevent$tRecursive(fn) {
   return (path) => {
     if (path.parent && t.isCallExpression(path.parent) && t.isIdentifier(path.parent.callee, { name: '$t' })) {
+      const firstArgNode = path.parent.arguments[0];
+      if (firstArgNode.type === 'StringLiteral') {
+        addI18nKeys(firstArgNode.value);
+      } else if (firstArgNode.type === 'TemplateLiteral') {
+        addI18nKeys(firstArgNode.quasis[0].value.raw);
+      } else {
+        throw new Error('[addI18nKeys] Unexpected arg type :(');
+      }
       return;
     }
     fn(path);

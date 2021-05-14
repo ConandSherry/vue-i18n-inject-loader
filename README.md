@@ -1,4 +1,4 @@
-# vue-i18n-generator
+# vue-i18n-inject-loader
 
 Auto insert \$t function in vue file which vue-i18n needed
 

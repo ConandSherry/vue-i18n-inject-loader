@@ -1,25 +1,18 @@
-const vueTranslate = require('./language-vue');
-const jsTranslate = require('./language-js');
+const path = require('path');
+const loaderUtils = require('loader-utils');
+const injectI18n = require('./inject-i18n');
+
 module.exports = function (source) {
+  const options = loaderUtils.getOptions(this);
+  const { resourceQueryRe = /[^]*/, excludeReList = [] } = options;
+
   if (
-    // todo 添加配置项 排除特定目录
-    this.resourcePath.includes('node_modules') &&
-    !this.resourcePath.includes('@conandmobile')
+    !new RegExp(resourceQueryRe).test(this.resourceQuery) ||
+    excludeReList.map((reStr) => new RegExp(reStr)).some((re) => re.test(this.resourcePath))
   ) {
     return source;
   }
 
-  const filePath = `./${path.relative(process.env.rootPath, this.resourcePath)}`.replace(/\\/g, '/');
-  const extname = path.extname(filePath).slice(1);
-
-  const supportTypes = {
-    vue: vueTranslate,
-    js: jsTranslate,
-    ts: jsTranslate,
-  };
-  if (!supportTypes[extname]) {
-    return source;
-  }
-
-  return supportTypes[extname](source);
+  const extname = path.extname(this.resourcePath).slice(1);
+  return injectI18n.call(this, { content: source, extname });
 };
