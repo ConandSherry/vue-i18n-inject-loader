@@ -1,5 +1,5 @@
 const dirRE = /^v-|^@|^:/;
-const { wrapWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
+const { wrapInterpolationWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
 
 const PREPROCESS_PIPELINE = [
   isSelfClosing,
@@ -61,7 +61,7 @@ function extractInterpolation(ast) {
          * */
         child.interpolationText = expressions[0];
       } else {
-        child.interpolationText = wrapWithTemplateLiteral(quasis, expressions);
+        child.interpolationText = wrapInterpolationWithTemplateLiteral(quasis, expressions);
       }
       newChildren.push(child);
     }
