@@ -4,12 +4,9 @@ const injectI18n = require('./inject-i18n');
 
 module.exports = function (source) {
   const options = loaderUtils.getOptions(this);
-  const { resourceQueryRe = /[^]*/, excludeReList = [] } = options;
+  const { excludeReList = [] } = options;
 
-  if (
-    !new RegExp(resourceQueryRe).test(this.resourceQuery) ||
-    excludeReList.map((reStr) => new RegExp(reStr)).some((re) => re.test(this.resourcePath))
-  ) {
+  if (excludeReList.map((reStr) => new RegExp(reStr)).some((re) => re.test(this.resourcePath))) {
     return source;
   }
 
