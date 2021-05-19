@@ -1,5 +1,5 @@
 const PluginName = require('./name');
-
+const path = require('path');
 const getTranslationDict = async (i18nKeys, translateAsync) => {
   const langDict = { cn: {}, en: {} };
 
@@ -47,7 +47,7 @@ module.exports = class VueI18nInjectPlugin {
             ({ resource, context }) => resource && (context || '').includes(localePath)
           );
           localeModules.forEach(({ resource, buildInfo }) => {
-            const [fileNameWithExt, fileName] = resource.match(/([^\/]+)(?:.json)/);
+            const fileName = path.basename(resource, '.json');
             buildInfo.jsonData = langDict[fileName];
           });
           callback();
