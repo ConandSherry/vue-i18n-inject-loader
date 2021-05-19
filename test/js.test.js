@@ -95,3 +95,12 @@ describe('Template string', () => {
 });`);
   });
 });
+
+describe('About keys of object property', () => {
+  test('do NOT translate keys of object property', () => {
+    const str = `const dict = {
+  '中文': {}
+};`;
+    expect(jsi18n(str)).toBe(str);
+  });
+});
