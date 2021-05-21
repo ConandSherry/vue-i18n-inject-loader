@@ -124,6 +124,9 @@ const handleTsTypeParameter = (path) => {
 const skipKeyInObjectProperty = (path) => {
   path.skipKey('key');
 };
+const skipTSEnumMember = (path) => {
+  path.stop();
+};
 module.exports = function serialize(ast, noScope = false) {
   traverse(ast, {
     StringLiteral: stringLiteralI18n,
@@ -131,6 +134,7 @@ module.exports = function serialize(ast, noScope = false) {
     TemplateLiteral: templateLiteralI18n,
     JSXText: jsxTextI18n,
     JSXAttribute: jsxAttributeI18n,
+    TSEnumMember: skipTSEnumMember,
     ObjectProperty: skipKeyInObjectProperty,
     // Enhance writing of strings
     BinaryExpression: stringConcatenation,

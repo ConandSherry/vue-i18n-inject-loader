@@ -41,6 +41,15 @@ describe('Keep the type of string', () => {
   test('translate backtick strings with escape', () => {
     expect(jsi18n(`const str = \`中\\\`\\\`文\`;`)).toBe(`const str = $t(\`中\\\`\\\`文\`);`);
   });
+  test('no translate with enum', () => {
+    expect(
+      jsi18n(`export enum Language {
+  language = "中文",
+}`)
+    ).toBe(`export enum Language {
+  language = "中文",
+}`);
+  });
 });
 
 describe('Support detection of Chinese', () => {
