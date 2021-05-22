@@ -11,6 +11,15 @@ describe('Support jsx', () => {
   test('translate attributes', () => {
     expect(jsi18n('const js = <span attr="中文"></span>;')).toBe('const js = <span attr={$t("中文")}></span>;');
   });
+  test('translate static content with line break', () => {
+    expect(
+      jsi18n(`this.object({
+  jsx: <div>中文 中文</div>,
+});`)
+    ).toBe(`this.object({
+  jsx: <div>{$t(\`中文 中文\`)}</div>
+});`);
+  });
 });
 
 describe('Support TypeScript', () => {

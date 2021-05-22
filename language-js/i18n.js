@@ -105,7 +105,10 @@ const jsxTextI18n = (path) => {
     return;
   }
   const { value } = path.node;
-  const templateLiteral = t.TemplateLiteral([t.templateElement({ raw: value.replace(/`/g, '\\`') })], []);
+  const templateLiteral = t.TemplateLiteral(
+    [t.templateElement({ raw: value.replace(/`/g, '\\`').replace(/\n +/g, ' ').trim() })],
+    []
+  );
   path.replaceWith(t.jsxExpressionContainer(templateLiteral));
 };
 
