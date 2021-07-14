@@ -1,14 +1,16 @@
 const PluginName = require('./name');
 const path = require('path');
 const getTranslationDict = async (i18nKeys, translateAsync) => {
-  const langDict = { cn: {}, en: {} };
-
+  const langDict = {};
   console.time('Get Translation Dict');
   const result = await translateAsync(i18nKeys); // `result` is like: [ { key, cn, en } ]
   console.timeEnd('Get Translation Dict');
 
   result.forEach((item) => {
-    Object.keys(langDict).forEach((lang) => {
+    Object.keys(item).forEach((lang) => {
+      if (!langDict[lang]) {
+        langDict[lang] = {};
+      }
       langDict[lang][item.key] = item[lang];
     });
   });
