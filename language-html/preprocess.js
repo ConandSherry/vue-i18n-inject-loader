@@ -1,6 +1,6 @@
 const dirRE = /^v-|^@|^:/;
 const { wrapInterpolationWithTemplateLiteral } = require('./utils/wrap-with-template-literal');
-
+const { decode } = require('he');
 const PREPROCESS_PIPELINE = [
   isSelfClosing,
   isDirective,
@@ -43,10 +43,12 @@ function extractInterpolation(ast) {
 
       const quasis = [],
         expressions = [];
-
-      child.value
-        .replace(/\n +/g, ' ') //deal with line break
-        .trim()
+      decode(
+        child.value
+          .replace(/\n +/g, ' ') //deal with line break
+          .trim()
+      )
+        .replace(/\u00A0+/g, ' ') //keep same decode in vue-template-compiler
         .split(interpolationRegex)
         .forEach((value, i) => {
           if (i % 2 === 0) {

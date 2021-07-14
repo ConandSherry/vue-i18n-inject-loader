@@ -20,6 +20,9 @@ describe('Support simple interpolations', () => {
   test('translate static content with escape', () => {
     expect(htmli18n(`<div>\`中文\`</div>`)).toBe(`<div>{{$t(\`\\\`中文\\\`\`)}}</div>`);
   });
+  test('translate content with html decode', () => {
+    expect(htmli18n(`<div>中&nbsp;&nbsp;文&nbsp;</div>`)).toBe('<div>{{$t(`中 文 `)}}</div>');
+  });
   test('translate dynamic content with filter', () => {
     expect(htmli18n(`<div>中文{{val | filter(arg1, arg2)}}</div>`)).toBe(`<div>{{$t(\`中文{param0}\`, {
   param0: $options.filters.filter(val, arg1, arg2)
