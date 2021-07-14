@@ -1,5 +1,7 @@
 const PluginName = require('./name');
 const path = require('path');
+const fs = require('fs');
+const findCacheDir = require('find-cache-dir');
 const getTranslationDict = async (i18nKeys, translateAsync) => {
   const langDict = {};
   console.time('Get Translation Dict');
@@ -50,7 +52,13 @@ module.exports = class VueI18nInjectPlugin {
           );
           localeModules.forEach(({ resource, buildInfo }) => {
             const fileName = path.basename(resource, '.json');
-            buildInfo.jsonData = langDict[fileName];
+            const cacheDir = findCacheDir({ name: fileName });
+            let cacheContent = {};
+            if (fs.existsSync(cacheDir)) {
+              cacheContent = JSON.parse(fs.readFileSync(cacheDir, 'utf-8'));
+            }
+            buildInfo.jsonData = Object.assign(buildInfo.jsonData, cacheContent, langDict[fileName]);
+            fs.writeFileSync(cacheDir, JSON.stringify(buildInfo.jsonData), 'utf-8');
           });
           callback();
         });
