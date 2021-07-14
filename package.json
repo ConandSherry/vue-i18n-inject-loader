@@ -24,7 +24,8 @@
     "@babel/types": "^7.12.10",
     "he": "^1.2.0",
     "loader-utils": "^2.0.0",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "unraw": "^2.0.0"
   },
   "devDependencies": {
     "vue-template-compiler": "^2.6.12",

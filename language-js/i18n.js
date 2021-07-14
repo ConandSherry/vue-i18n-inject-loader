@@ -5,7 +5,7 @@ const t = require('@babel/types');
 const { stringConcatenation } = require('./utils/string-concatenation');
 const { addI18nKeys } = require('../utils/i18n-keys');
 const { CN_RE } = require('../utils/is-cn');
-
+const unraw = require('unraw');
 /**
  * todo text解析模板都在js里面处理，在js里去合并?统一babel parse入口
  */
@@ -16,7 +16,7 @@ function prevent$tRecursive(fn) {
       if (firstArgNode.type === 'StringLiteral') {
         addI18nKeys(firstArgNode.value);
       } else if (firstArgNode.type === 'TemplateLiteral') {
-        addI18nKeys(firstArgNode.quasis[0].value.raw);
+        addI18nKeys(unraw(firstArgNode.quasis[0].value.raw));
       } else {
         throw new Error('[addI18nKeys] Unexpected arg type :(');
       }
